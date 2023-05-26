@@ -29,7 +29,7 @@ public class AlbumBilancio implements Comparable<AlbumBilancio>{
 
 	@Override
 	public String toString() {
-		return album + ", bilancio=" + String.format("%.2f", bilancio);
+		return album + ", bilancio=" + String.format("%.2f", bilancio) +'\n';
 	}
 	
 	

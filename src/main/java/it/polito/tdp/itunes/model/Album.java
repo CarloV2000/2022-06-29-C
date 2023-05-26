@@ -3,6 +3,7 @@ package it.polito.tdp.itunes.model;
 public class Album {
 	private Integer albumId;
 	private String title;
+	private int prezzo;
 	
 	public Album(Integer albumId, String title) {
 		super();
@@ -24,6 +25,15 @@ public class Album {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	
+
+	public int getPrezzo() {
+		return prezzo;
+	}
+
+	public void setPrezzo(int prezzo) {
+		this.prezzo = prezzo;
 	}
 
 	@Override

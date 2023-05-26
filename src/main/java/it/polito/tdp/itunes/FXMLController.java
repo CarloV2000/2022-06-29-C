@@ -5,7 +5,12 @@
 package it.polito.tdp.itunes;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.itunes.model.Album;
+import it.polito.tdp.itunes.model.AlbumBilancio;
 import it.polito.tdp.itunes.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -34,10 +39,10 @@ public class FXMLController {
     private Button btnPercorso; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbA1"
-    private ComboBox<?> cmbA1; // Value injected by FXMLLoader
+    private ComboBox<Album> cmbA1; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbA2"
-    private ComboBox<?> cmbA2; // Value injected by FXMLLoader
+    private ComboBox<Album> cmbA2; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtN"
     private TextField txtN; // Value injected by FXMLLoader
@@ -50,17 +55,66 @@ public class FXMLController {
 
     @FXML
     void doCalcolaAdiacenze(ActionEvent event) {
-    	
+    	Album a1 = this.cmbA1.getValue();
+    	String s = "";
+    	if(a1 == null) {
+    		this.txtResult.setText("Selezionare un album dalla box a1!");
+    		return;
+    	}
+    	List<AlbumBilancio> result = new ArrayList<>(model.getBilanci(a1));
+    	for(AlbumBilancio ab : result) {
+    		s += ab.toString();
+    	}
+    	this.txtResult.appendText("\n Lista di tutti i nodi adiacenti ordinati per bilncio : \n" + s);
     }
 
     @FXML
     void doCalcolaPercorso(ActionEvent event) {
+    	Album a1 = this.cmbA1.getValue();
+    	Album a2 = this.cmbA1.getValue();
+    	String input = this.txtN.getText();
+    	int inputNum;
+    	String s = "";
+    	try {
+    		inputNum = Integer.parseInt(input);
+    		
+    	}catch(NumberFormatException e) {
+    		this.txtResult.setText("Inserire un numero nel campo: (x)! ");
+    		return;
+    	}
     	
+    	if(a1 == null) {
+    		this.txtResult.setText("Selezionare un album dalla box a1!");
+    		return;
+    	}    	
+    	if(a2 == null) {
+    		this.txtResult.setText("Selezionare un album dalla box a2!");
+    		return;
+    	}
+    	List<Album> percorso =  model.calcolaCammino(a1, a2, inputNum);
+    	for(Album a : percorso) {
+    		s += a.getTitle() + " , bilancio = " + model.getBilancio(a) + "\n";
+    	}
+    	this.txtResult.setText(s);
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-    	
+    	String input = this.txtN.getText();
+    	int inputNum;
+    	try {
+    		inputNum = Integer.parseInt(input);
+    		
+    	}catch(NumberFormatException e) {
+    		this.txtResult.setText("Inserire un numero nel campo: Prezzo(n)! ");
+    		return;
+    	}
+    	model.creaGrafo(inputNum);
+    	for(Album x : model.getAllAlbum()) {//popolo le cmbBox
+    		this.cmbA1.getItems().add(x);
+    		this.cmbA2.getItems().add(x);
+    	}
+    	this.txtResult.setText("Grafo creato con "+model.getGrafo().vertexSet().size()+" vertici e "+model.getGrafo().edgeSet().size()+" archi");
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
